@@ -11,7 +11,7 @@ ObjFormulation='CDW+DD+CM';
 %% CMA-ES Settings
 
 % Maximum Number of Iterations
-MaxIt=5;
+MaxIt=40;
 
 % Population Size (and Number of Offsprings)
 lambda=(4+round(3*log(nVar)));

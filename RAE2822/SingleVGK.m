@@ -17,7 +17,7 @@ Xtrans = 0.05;          % Transition location on upper/lower surface
 CL_req = 1;             % 0 - specify incidence ; 1 - specify target CL
 
 % AlpCLval = -0.5; 
-AlpCLval = 0.0;         % value of initial incidence for target CL runs
+AlpCLval = 0;         % value of initial incidence for target CL runs
 
 % ordsfile = 'rae5225.dat';
 ordsfile = 'geometry.dat';
@@ -54,18 +54,33 @@ var(5)= AlpCL;
 var(6)= AlpCLval;
 var(7)= Xtrans;
 
+
 istat1 = Run_vgkcon(var);
-
-if (istat1==0)
-    
+if (istat1==0)    
    istat2 = Run_vgk;
+   if (istat2==0)
+        data = Read_data(n_mach,n_alpCL);
+       save('Polar_data','data');
+    else
+        if AlpCL>=0.6
+            AlpCLval = 0.5; 
+        else
+            AlpCLval = -0.5; 
+        end
+        var(6)= AlpCLval;
 
-end
+        istat1 = Run_vgkcon(var);
+        if (istat1==0)
 
-if (istat2==0)
-
-   data = Read_data(n_mach,n_alpCL);
-   save('Polar_data','data');
+           istat2 = Run_vgk;
+           if (istat2==0)
+               data = Read_data(n_mach,n_alpCL);
+               save('Polar_data','data');
+            else
+               data=[];
+           end
+        end
+    end
 else
     if AlpCL>=0.6
         AlpCLval = 0.5; 
@@ -73,17 +88,20 @@ else
         AlpCLval = -0.5; 
     end
     var(6)= AlpCLval;
+
     istat1 = Run_vgkcon(var);
-    if (istat1==0)
+    if (istat1==0)   
        istat2 = Run_vgk;
-    end
-    if (istat2==0)
-       data = Read_data(n_mach,n_alpCL);
-       save('Polar_data','data');
-    else
-        data=[];
+       if (istat2==0)
+           data = Read_data(n_mach,n_alpCL);
+           save('Polar_data','data');
+        else
+           data=[];
+       end
     end
 end
+
+
         
 
 end

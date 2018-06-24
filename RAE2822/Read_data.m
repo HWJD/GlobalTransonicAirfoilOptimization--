@@ -139,7 +139,7 @@ if ~isempty(pos_stand)
         data=[];
     end
 else
+    fclose(fid);
     data=[];
 end
-
 end
